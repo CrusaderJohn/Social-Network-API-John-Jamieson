@@ -3,29 +3,33 @@ const { Schema, model } = require('mongoose');
 // Schema to create Thought model
 const thoughtSchema = new Schema(
     {
-        first: {
+        thoughtText: {
             type: String,
             required: true,
-            max_length: 50,
+            max_length: 280,
+            min_length: 1,
         },
-        last: {
+        createdAt: {
+            type: Date,
+            default: Date.now(),
+        },
+        username : {
             type: String,
             required: true,
-            max_length: 50,
         },
-        github: {
-            type: String,
-            required: true,
-            max_length: 50,
-        },
-        assignments: [assignmentSchema],
+        reactions : [reactionSchema],
     },
     {
         toJSON: {
-            getters: true,
+            virtuals: true,
         },
     }
 );
+
+thoughtSchema.virtual('reactionCount').get(function ()
+{
+    return this.reactions.length;
+})
 
 const Thought = model('thought', thoughtSchema);
 
